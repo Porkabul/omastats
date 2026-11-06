@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "io.github.qempexe.omastats",
+  "name": "OmaStats",
+  "version": "1.0.0",
+  "author": "qempexe",
+  "license": "MIT",
+  "description": "CPU, GPU, memory, disk and network readings in the bar: bars, text or both, three-colour thresholds per metric, and a bilingual settings panel with its own floating window.",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "qml/BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "OmaStats",
+    "description": "CPU, GPU, temperatures, memory, disks and network, colour-coded by load with configurable thresholds.",
+    "category": "System",
+    "aliases": [
+      "stats",
+      "system",
+      "cpu",
+      "gpu",
+      "ram",
+      "disk",
+      "network"
+    ],
+    "allowMultiple": false,
+    "defaultSection": "right",
+    "defaults": {},
+    "schema": []
+  }
+}
