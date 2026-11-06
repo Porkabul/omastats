@@ -16,6 +16,9 @@ minus the wattage, plus memory, disk usage and network rates.
 - Bars can be horizontal or vertical, with configurable length, thickness,
   rounding and track opacity.
 - Display mode: text only, bars only, or both. Labels and units can be hidden.
+- A label for every metric, including CPU, GPU, memory, swap, disks and
+  network. Leading and trailing spaces in a label are kept as left and right
+  margins.
 - Three colours per metric (low, middle, high) with a middle and a high
   threshold. Threshold pairs entered the wrong way round are normalised.
 - A per-metric minimum and maximum scales the bar, so a 40 °C idle temperature
@@ -61,8 +64,8 @@ It prints one JSON object per interval. Unreadable values are `null`.
 
 - Left or right click the widget: open the settings panel.
 - Middle click: run `btop` when **Middle click** is set to btop.
-- The panel tabs are **General**, **Colors**, **CPU**, **GPU**, **Memory**,
-  **Disks**, **Network**, **Panel** and **About**.
+- The panel tabs are **General**, **Labels**, **Colors**, **CPU**, **GPU**,
+  **Memory**, **Disks**, **Network**, **Panel** and **About**.
 - The search field looks through every tab.
 - **Own window** pops the settings into a floating window; **Dock to bar**
   puts them back.

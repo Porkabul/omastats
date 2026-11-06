@@ -29,6 +29,20 @@ var groups = [
     ]
   },
   {
+    key: "labels",
+    title: "Labels",
+    items: [
+      { key: "labelCpu", label: "CPU label", hint: "Text shown for the processor. Leading and trailing spaces are kept as margins.", kind: "string", fallback: "CPU", maxLength: 24 },
+      { key: "labelGpu", label: "GPU label", hint: "Text shown for graphics. Leading and trailing spaces are kept as margins.", kind: "string", fallback: "GPU", maxLength: 24 },
+      { key: "labelRam", label: "Memory label", hint: "Text shown for memory. Leading and trailing spaces are kept as margins.", kind: "string", fallback: "RAM", maxLength: 24 },
+      { key: "labelSwap", label: "Swap label", hint: "Text shown for swap. Leading and trailing spaces are kept as margins.", kind: "string", fallback: "SWP", maxLength: 24 },
+      { key: "labelDisk", label: "Disk label", hint: "Empty uses the mount name (DSK, HOME...). Leading and trailing spaces are kept as margins.", kind: "string", fallback: "", maxLength: 24 },
+      { key: "labelNetDown", label: "Download label", hint: "Text shown for download. Leading and trailing spaces are kept as margins.", kind: "string", fallback: "↓", maxLength: 24 },
+      { key: "labelNetUp", label: "Upload label", hint: "Text shown for upload. Leading and trailing spaces are kept as margins.", kind: "string", fallback: "↑", maxLength: 24 },
+      { key: "labelTemp", label: "Temperature label", hint: "Marks the temperature bar when bars are shown alone. Leading and trailing spaces are kept as margins.", kind: "string", fallback: "°", maxLength: 24 }
+    ]
+  },
+  {
     key: "colors",
     title: "Colors",
     items: [

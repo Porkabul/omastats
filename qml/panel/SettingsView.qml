@@ -209,7 +209,7 @@ Item {
                     spacing: root.values.gap
 
                     MetricChip {
-                        label: "CPU"; shortLabel: "C"
+                        label: root.values.labelCpu; shortLabel: "C"
                         valueText: Format.pct(62, root.values.showUnits)
                         fraction: Format.fraction(62, root.values.cpuMin, root.values.cpuMax)
                         fillColor: Format.colorFor(62, root.values.cpuWarn, root.values.cpuCrit, root.values)
@@ -230,7 +230,7 @@ Item {
                     }
 
                     MetricChip {
-                        label: "RAM"; shortLabel: "M"
+                        label: root.values.labelRam; shortLabel: "M"
                         valueText: Format.pct(78, root.values.showUnits)
                         fraction: Format.fraction(78, root.values.ramMin, root.values.ramMax)
                         fillColor: Format.colorFor(78, root.values.ramWarn, root.values.ramCrit, root.values)
@@ -251,7 +251,7 @@ Item {
                     }
 
                     MetricChip {
-                        label: "DSK"; shortLabel: "D"
+                        label: root.values.labelDisk !== "" ? root.values.labelDisk : "DSK"; shortLabel: "D"
                         valueText: Format.pct(42, root.values.showUnits)
                         fraction: Format.fraction(42, root.values.diskMin, root.values.diskMax)
                         fillColor: Format.colorFor(42, root.values.diskWarn, root.values.diskCrit, root.values)

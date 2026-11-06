@@ -70,7 +70,7 @@ BarWidget {
                     level = Math.max(level, levelFor(d.cpuTemp, c.cpuTempWarn, c.cpuTempCrit))
             }
             out.push({
-                key: "cpu", label: "CPU", short: "C",
+                key: "cpu", label: c.labelCpu, short: "C",
                 valueText: text,
                 fraction: Format.fraction(d.cpu, c.cpuMin, c.cpuMax),
                 color: loadCol,
@@ -81,7 +81,7 @@ BarWidget {
             if (c.display === "bar" && c.cpuTempShow && has(d.cpuTemp)) {
                 const tempCol = c.colorExtra ? colorFor(d.cpuTemp, c.cpuTempWarn, c.cpuTempCrit) : root.fg
                 out.push({
-                    key: "cpuTemp", label: "\u00b0", short: "\u00b0",
+                    key: "cpuTemp", label: c.labelTemp, short: "\u00b0",
                     valueText: "",
                     fraction: Format.fraction(d.cpuTemp, c.cpuTempMin, c.cpuTempMax),
                     color: tempCol, valueColor: root.fg
@@ -101,7 +101,7 @@ BarWidget {
                         level = Math.max(level, levelFor(d.gpuTemp, c.gpuTempWarn, c.gpuTempCrit))
                 }
                 out.push({
-                    key: "gpu", label: "GPU", short: "G",
+                    key: "gpu", label: c.labelGpu, short: "G",
                     valueText: text,
                     fraction: Format.fraction(d.gpu, c.gpuMin, c.gpuMax),
                     color: loadCol,
@@ -110,7 +110,7 @@ BarWidget {
                 if (c.display === "bar" && c.gpuTempShow && has(d.gpuTemp)) {
                     const tempCol = c.colorExtra ? colorFor(d.gpuTemp, c.gpuTempWarn, c.gpuTempCrit) : root.fg
                     out.push({
-                        key: "gpuTemp", label: "\u00b0", short: "\u00b0",
+                        key: "gpuTemp", label: c.labelTemp, short: "\u00b0",
                         valueText: "",
                         fraction: Format.fraction(d.gpuTemp, c.gpuTempMin, c.gpuTempMax),
                         color: tempCol, valueColor: root.fg
@@ -122,7 +122,7 @@ BarWidget {
         if (c.ramShow && has(d.ram)) {
             const col = colorFor(d.ram, c.ramWarn, c.ramCrit)
             out.push({
-                key: "ram", label: "RAM", short: "M",
+                key: "ram", label: c.labelRam, short: "M",
                 valueText: Format.pct(d.ram, c.showUnits),
                 fraction: Format.fraction(d.ram, c.ramMin, c.ramMax),
                 color: col, valueColor: c.colorText ? col : root.fg
@@ -132,7 +132,7 @@ BarWidget {
         if (c.swapShow && has(d.swap) && Number(d.swapTotal) > 0) {
             const col = colorFor(d.swap, c.swapWarn, c.swapCrit)
             out.push({
-                key: "swap", label: "SWP", short: "S",
+                key: "swap", label: c.labelSwap, short: "S",
                 valueText: Format.pct(d.swap, c.showUnits),
                 fraction: Format.fraction(d.swap, c.swapMin, c.swapMax),
                 color: col, valueColor: c.colorText ? col : root.fg
@@ -150,7 +150,7 @@ BarWidget {
                 const col = colorFor(disk.pct, c.diskWarn, c.diskCrit)
                 out.push({
                     key: "disk:" + String(disk.mount),
-                    label: Format.diskLabel(disk.mount), short: "D",
+                    label: c.labelDisk !== "" ? c.labelDisk : Format.diskLabel(disk.mount), short: "D",
                     valueText: Format.pct(disk.pct, c.showUnits),
                     fraction: Format.fraction(disk.pct, c.diskMin, c.diskMax),
                     color: col, valueColor: c.colorText ? col : root.fg
@@ -164,7 +164,7 @@ BarWidget {
                 const mb = Format.mbps(d.rx)
                 const col = Format.colorFor(mb, t.warn, t.crit, c)
                 out.push({
-                    key: "rx", label: "\u2193", short: "\u2193",
+                    key: "rx", label: c.labelNetDown, short: "\u2193",
                     valueText: Format.rate(d.rx, c.netUnit, c.netDecimals),
                     fraction: Format.fraction(mb, c.netMin, c.netMax),
                     color: col, valueColor: c.colorText ? col : root.fg
@@ -174,7 +174,7 @@ BarWidget {
                 const mb = Format.mbps(d.tx)
                 const col = Format.colorFor(mb, t.warn, t.crit, c)
                 out.push({
-                    key: "tx", label: "\u2191", short: "\u2191",
+                    key: "tx", label: c.labelNetUp, short: "\u2191",
                     valueText: Format.rate(d.tx, c.netUnit, c.netDecimals),
                     fraction: Format.fraction(mb, c.netMin, c.netMax),
                     color: col, valueColor: c.colorText ? col : root.fg

@@ -27,6 +27,31 @@ Item {
     property string separator: ""
     property bool showSeparator: false
 
+    // Leading and trailing spaces in a label become real margins, so " CPU "
+    // reads with air on both sides rather than depending on how the font
+    // happens to shape whitespace.
+    TextMetrics {
+        id: labelSpace
+        font.family: root.fontFamily
+        font.pixelSize: root.fontSize
+        text: " "
+    }
+
+    readonly property var labelParts: {
+        const raw = String(root.label === undefined || root.label === null ? "" : root.label)
+        let lead = 0
+        while (lead < raw.length && raw.charCodeAt(lead) === 32) lead++
+        let trail = 0
+        while (trail < raw.length - lead && raw.charCodeAt(raw.length - 1 - trail) === 32) trail++
+        return { leading: lead, trailing: trail, core: raw.slice(lead, raw.length - trail) }
+    }
+    readonly property real spaceWidth: labelSpace.advanceWidth
+    readonly property string labelCore: root.compact
+        ? (root.shortLabel !== "" ? root.shortLabel : root.label)
+        : root.labelParts.core
+    readonly property real labelPadLeft: root.compact ? 0 : root.labelParts.leading * root.spaceWidth
+    readonly property real labelPadRight: root.compact ? 0 : root.labelParts.trailing * root.spaceWidth
+
     implicitWidth: row.implicitWidth
     implicitHeight: Math.max(row.implicitHeight, verticalBar ? barLength : barThickness)
 
@@ -47,18 +72,23 @@ Item {
             rounding: root.rounding
         }
 
-        Text {
+        Item {
             anchors.verticalCenter: parent.verticalCenter
             visible: root.showLabel
-            textFormat: Text.PlainText
-            text: root.compact
-                ? (root.shortLabel !== "" ? root.shortLabel : root.label)
-                : root.label
-            color: root.textColor
-            opacity: 0.72
-            font.family: root.fontFamily
-            font.pixelSize: root.fontSize
-            renderType: Text.NativeRendering
+            implicitWidth: labelText.implicitWidth + root.labelPadLeft + root.labelPadRight
+            implicitHeight: labelText.implicitHeight
+
+            Text {
+                id: labelText
+                x: root.labelPadLeft
+                textFormat: Text.PlainText
+                text: root.labelCore
+                color: root.textColor
+                opacity: 0.72
+                font.family: root.fontFamily
+                font.pixelSize: root.fontSize
+                renderType: Text.NativeRendering
+            }
         }
 
         Text {
