@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "io.github.qempexe.omastats",
+  "id": "io.github.porkabul.omastats",
   "name": "OmaStats",
   "version": "1.0.0",
-  "author": "qempexe",
+  "author": "porkabul",
   "license": "MIT",
   "description": "CPU, GPU, memory, disk and network readings in the bar: bars, text or both, three-colour thresholds per metric, and a bilingual settings panel with its own floating window.",
   "kinds": [

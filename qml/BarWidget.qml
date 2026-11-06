@@ -14,7 +14,7 @@ import "components"
 BarWidget {
     id: root
 
-    moduleName: "io.github.qempexe.omastats"
+    moduleName: "io.github.porkabul.omastats"
 
     SettingsStore { id: store }
     Translations { id: strings; directory: Qt.resolvedUrl("../i18n") }
@@ -40,8 +40,17 @@ BarWidget {
         return Format.colorFor(value, t.warn, t.crit, cfg)
     }
 
-    function tempColor(value, warn, crit) {
-        return cfg.colorExtra ? colorFor(value, warn, crit) : fg
+    // 0 low, 1 middle, 2 high. Used to let a hot CPU keep the bar green while
+    // its temperature turns the value amber or red.
+    function levelFor(value, warn, crit) {
+        const t = Format.thresholds(warn, crit)
+        const v = Number(value)
+        if (!isFinite(v)) return 0
+        return v >= t.crit ? 2 : (v >= t.warn ? 1 : 0)
+    }
+
+    function rampColor(level) {
+        return level >= 2 ? cfg.colorHigh : (level >= 1 ? cfg.colorMid : cfg.colorLow)
     }
 
     // Every reading the bar should draw, in a stable order. A value this
@@ -52,43 +61,61 @@ BarWidget {
         const c = root.cfg
 
         if (c.cpuShow && has(d.cpu)) {
-            const col = colorFor(d.cpu, c.cpuWarn, c.cpuCrit)
+            const loadCol = colorFor(d.cpu, c.cpuWarn, c.cpuCrit)
+            let level = levelFor(d.cpu, c.cpuWarn, c.cpuCrit)
+            let text = Format.pct(d.cpu, c.showUnits)
+            if (c.cpuTempShow && has(d.cpuTemp)) {
+                text += " " + Format.temp(d.cpuTemp, c.showUnits)
+                if (c.colorExtra)
+                    level = Math.max(level, levelFor(d.cpuTemp, c.cpuTempWarn, c.cpuTempCrit))
+            }
             out.push({
                 key: "cpu", label: "CPU", short: "C",
-                valueText: Format.pct(d.cpu, c.showUnits),
+                valueText: text,
                 fraction: Format.fraction(d.cpu, c.cpuMin, c.cpuMax),
-                color: col, valueColor: c.colorText ? col : root.fg
+                color: loadCol,
+                valueColor: c.colorText ? (c.colorExtra ? rampColor(level) : loadCol) : root.fg
             })
-        }
-        if (c.cpuShow && c.cpuTempShow && has(d.cpuTemp)) {
-            const col = tempColor(d.cpuTemp, c.cpuTempWarn, c.cpuTempCrit)
-            out.push({
-                key: "cpuTemp", label: "CPU T", short: "c",
-                valueText: Format.temp(d.cpuTemp, c.showUnits),
-                fraction: Format.fraction(d.cpuTemp, c.cpuTempMin, c.cpuTempMax),
-                color: col, valueColor: c.colorText && c.colorExtra ? col : root.fg
-            })
+            // Bars-only hides the value line. Keep the temperature readable as
+            // its own bar, marked with a degree sign instead of repeating "CPU".
+            if (c.display === "bar" && c.cpuTempShow && has(d.cpuTemp)) {
+                const tempCol = c.colorExtra ? colorFor(d.cpuTemp, c.cpuTempWarn, c.cpuTempCrit) : root.fg
+                out.push({
+                    key: "cpuTemp", label: "\u00b0", short: "\u00b0",
+                    valueText: "",
+                    fraction: Format.fraction(d.cpuTemp, c.cpuTempMin, c.cpuTempMax),
+                    color: tempCol, valueColor: root.fg
+                })
+            }
         }
 
         const hasGpu = has(d.gpu) || has(d.gpuTemp)
         if (c.gpuShow && hasGpu) {
             if (has(d.gpu)) {
-                const col = colorFor(d.gpu, c.gpuWarn, c.gpuCrit)
+                const loadCol = colorFor(d.gpu, c.gpuWarn, c.gpuCrit)
+                let level = levelFor(d.gpu, c.gpuWarn, c.gpuCrit)
+                let text = Format.pct(d.gpu, c.showUnits)
+                if (c.gpuTempShow && has(d.gpuTemp)) {
+                    text += " " + Format.temp(d.gpuTemp, c.showUnits)
+                    if (c.colorExtra)
+                        level = Math.max(level, levelFor(d.gpuTemp, c.gpuTempWarn, c.gpuTempCrit))
+                }
                 out.push({
                     key: "gpu", label: "GPU", short: "G",
-                    valueText: Format.pct(d.gpu, c.showUnits),
+                    valueText: text,
                     fraction: Format.fraction(d.gpu, c.gpuMin, c.gpuMax),
-                    color: col, valueColor: c.colorText ? col : root.fg
+                    color: loadCol,
+                    valueColor: c.colorText ? (c.colorExtra ? rampColor(level) : loadCol) : root.fg
                 })
-            }
-            if (c.gpuTempShow && has(d.gpuTemp)) {
-                const col = tempColor(d.gpuTemp, c.gpuTempWarn, c.gpuTempCrit)
-                out.push({
-                    key: "gpuTemp", label: "GPU T", short: "g",
-                    valueText: Format.temp(d.gpuTemp, c.showUnits),
-                    fraction: Format.fraction(d.gpuTemp, c.gpuTempMin, c.gpuTempMax),
-                    color: col, valueColor: c.colorText && c.colorExtra ? col : root.fg
-                })
+                if (c.display === "bar" && c.gpuTempShow && has(d.gpuTemp)) {
+                    const tempCol = c.colorExtra ? colorFor(d.gpuTemp, c.gpuTempWarn, c.gpuTempCrit) : root.fg
+                    out.push({
+                        key: "gpuTemp", label: "\u00b0", short: "\u00b0",
+                        valueText: "",
+                        fraction: Format.fraction(d.gpuTemp, c.gpuTempMin, c.gpuTempMax),
+                        color: tempCol, valueColor: root.fg
+                    })
+                }
             }
         }
 
@@ -237,8 +264,13 @@ BarWidget {
         if (popoutLoader.item) popoutLoader.item.open()
     }
     function open() {
-        if (cfg.openAs === "window") openWindow()
-        else openPanel()
+        if (cfg.openAs === "window") {
+            if (panelLoader.item) panelLoader.item.close()
+            openWindow()
+        } else {
+            if (popoutLoader.item) popoutLoader.item.close()
+            openPanel()
+        }
     }
     function close() {
         if (panelLoader.item) panelLoader.item.close()
@@ -263,7 +295,6 @@ BarWidget {
         if (!target) return
         target.bar = root.bar
         target.anchorItem = button
-        target.hostWidget = root
         target.store = store
         target.strings = strings
         target.cfg = Qt.binding(function() { return root.cfg })
@@ -319,7 +350,11 @@ BarWidget {
         active: true
         visible: false
         source: "panel/PopoutWindow.qml"
-        onLoaded: root.injectPopout()
+        onLoaded: {
+            root.injectPopout()
+            if (popoutLoader.item && popoutLoader.item.dockRequested)
+                popoutLoader.item.dockRequested.connect(root.dockBack)
+        }
     }
 
     IpcHandler {

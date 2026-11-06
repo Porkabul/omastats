@@ -420,7 +420,7 @@ Item {
                 Txt {
                     ui: theme
                     Layout.fillWidth: true
-                    text: root.t("about.version", "Version 1.0.0 · MIT · by qempexe")
+                    text: root.t("about.version", "Version 1.0.0 · MIT · by porkabul")
                     font.pixelSize: theme.fs(10)
                     opacity: 0.5
                 }

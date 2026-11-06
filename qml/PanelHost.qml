@@ -10,7 +10,7 @@ import "panel"
 Panel {
     id: root
 
-    moduleName: "io.github.qempexe.omastats"
+    moduleName: "io.github.porkabul.omastats"
     ipcTarget: ""
     manageIpc: false
 

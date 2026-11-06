@@ -184,7 +184,7 @@
   "panel.popOut": "Fenêtre séparée",
   "panel.dock": "Ancrer à la barre",
 
-  "about.version": "Version 1.0.0 · MIT · par qempexe",
+  "about.version": "Version 1.0.0 · MIT · par porkabul",
   "about.description": "CPU, GPU, mémoire, disques et réseau dans la barre Omarchy, avec trois couleurs à paliers et une barre ou du texte pour chaque relevé.",
   "about.thresholds": "Chaque métrique a son minimum, son maximum, son palier intermédiaire et son palier haut. Sous le palier intermédiaire, la couleur basse est utilisée ; entre les deux, la couleur intermédiaire ; au palier haut et au-delà, la couleur haute.",
   "about.data": "Les relevés viennent de /proc, /sys et df. Un capteur illisible sur cette machine est omis au lieu d'être dessiné comme zéro. Les débits réseau suivent la route par défaut sauf si vous épinglez une interface.",

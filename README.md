@@ -28,7 +28,7 @@ minus the wattage, plus memory, disk usage and network rates.
 
 ```bash
 mkdir -p ~/.config/omarchy/plugins
-cp -r io.github.qempexe.omastats ~/.config/omarchy/plugins/
+cp -r io.github.porkabul.omastats ~/.config/omarchy/plugins/
 ```
 
 Then add the widget to `~/.config/omarchy/shell.json`, for example in the
@@ -39,7 +39,7 @@ Then add the widget to `~/.config/omarchy/shell.json`, for example in the
   "bar": {
     "layout": {
       "right": [
-        { "id": "io.github.qempexe.omastats" }
+        { "id": "io.github.porkabul.omastats" }
       ]
     }
   }
@@ -52,7 +52,7 @@ run `omarchy refresh shell` (or `omarchy restart shell`).
 The collector can be tested on its own:
 
 ```bash
-~/.config/omarchy/plugins/io.github.qempexe.omastats/bin/omastats 2 auto /
+~/.config/omarchy/plugins/io.github.porkabul.omastats/bin/omastats 2 auto /
 ```
 
 It prints one JSON object per interval. Unreadable values are `null`.
